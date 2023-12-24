@@ -7,7 +7,7 @@
 
 int main(int argc, char *argv[]) {
     if (argc != 4) {
-        fprintf(stderr, "Usage: %s source_file1 source_file2 target_file\n", argv[0]);
+        fprintf(stderr, "Usage: %s file1 file2 target_file\n", argv[0]);
         exit(EXIT_FAILURE);
     }
 
@@ -28,7 +28,6 @@ int main(int argc, char *argv[]) {
         exit(EXIT_FAILURE);
     }
 
-    // 从源文件1读取内容写入目标文件
     while ((nread = read(source_fd1, buffer, sizeof(buffer))) > 0) {
         if (write(target_fd, buffer, nread) != nread) {
             perror("write");
@@ -46,7 +45,6 @@ int main(int argc, char *argv[]) {
         exit(EXIT_FAILURE);
     }
 
-    // 从源文件2读取内容写入目标文件
     while ((nread = read(source_fd2, buffer, sizeof(buffer))) > 0) {
         if (write(target_fd, buffer, nread) != nread) {
             perror("write");
@@ -69,16 +67,12 @@ int main(int argc, char *argv[]) {
     close(source_fd2);
     close(target_fd);
 
-    // 重新打开目标文件以只读方式
     target_fd = open(argv[3], O_RDONLY);
     if (target_fd == -1) {
         perror("open");
         exit(EXIT_FAILURE);
     }
 
-    printf("Merged content:\n");
-
-    // 将合并后的文件内容显示到终端
     while ((nread = read(target_fd, buffer, sizeof(buffer))) > 0) {
         if (write(STDOUT_FILENO, buffer, nread) != nread) {
             perror("write");
@@ -94,8 +88,5 @@ int main(int argc, char *argv[]) {
     }
 
     close(target_fd);
-
-    printf("\nMerge complete.\n");
-
     return 0;
 }
